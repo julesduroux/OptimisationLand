@@ -21,8 +21,17 @@ namespace ConsoleApp1
         public double UnRougeTour2 { get; set; }
         public double UnBleuTour3 { get; set; }
         public double DeuxBleuTour5 { get; set; }
-        public double DeuxNoirTour6 { get; set; }
-        public double TroisRougeTour6 { get; set; }
+        public double UnRetardBleuTour2 { get; set; }
+        public double unRetardRougeTour3 { get; set; }
+        public double UnRetardBleuTour3 { get; set; }
+        public double UnRetardBleuTour4 { get; set; }
+        public double unRetardRougeTour4 { get; set; }
+        public double UnBleuTour4 { get; set; }
+        public double unRougeTour3 { get; set; }
+        public double TroisRougeTour4 { get; set; }
+        public double TroisRougeTour5 { get; set; }
+        public double UnRetardBleuTour5 { get; set; }
+        public double DeuxRetardBleusTour6 { get; set; }
         public double UnLandUntapTour1 { get; set; }
         public double DeuxLandUntapTour2 { get; set; }
         public double TroisLandUntapTour3 { get; set; }

@@ -2472,6 +2472,11 @@ namespace ConsoleApp1
                     return true;
                 }
 
+                if (terrain.hub)
+                {
+                    return true;
+                }
+
                 if (terrain.fastland && tour <= 3)
                 {
                     return true;
@@ -2604,12 +2609,21 @@ namespace ConsoleApp1
             int oldnrd;
             int rndom=0;
             //Générer une séquence aléatoire de 24 terrains
+
+            //On choisit deux cartes que l'on ne va pas mettre
+            //unused 1
+            Random rnd = new Random();
+            int unused1 = rnd.Next(1, 11);
+            //unused 2
+            int unused2 = rnd.Next(1, 11);
+            while (unused1 == unused2)
+            {
+                unused2 = rnd.Next(1, 11);
+            }
             while (true)
             {
-                Random rnd = new Random();
-                oldnrd = rndom;
                 rndom = rnd.Next(1, 11);
-                if (rndom != oldnrd)
+                if (rndom != unused1 && rndom != unused2)
                 { 
                     switch (rnd.Next(1, 11))
                     {
@@ -2730,18 +2744,28 @@ namespace ConsoleApp1
             double UnRougeTour2 = 0;
             double UnBleuTour3 = 0;
             double DeuxBleuTour5 = 0;
-            double DeuxNoirTour6 = 0;
-            double TroisRougeTour6 = 0;
             double UnLandUntapTour1 = 0;
             double DeuxLandUntapTour2 = 0;
             double TroisLandUntapTour3 = 0;
             double QuatreLandUntapTour4 = 0;
             double CinqLandUntapTour5 = 0;
 
+            double UnRetardBleuTour2 = 0;
+            double unRetardRougeTour3 = 0;
+            double UnRetardBleuTour3 = 0;
+            double UnRetardBleuTour4 = 0;
+            double unRetardRougeTour4 = 0;
+            double TroisRougeTour4 = 0;
+            double TroisRougeTour5 = 0;
+            double UnRetardBleuTour5 = 0;
+            double DeuxRetardBleusTour6 = 0;
+
             //Objectifs Bonus
             double UnBleuTour1 = 0;
             double UnBleuTour2 = 0;
             double DeuxNoirTour4 = 0;
+            double UnBleuTour4 = 0;
+            double unRougeTour3 = 0;
             double DeuxNoirTour5 = 0;
             double SansMulligan = 0;
             double Mulligan6 = 0;
@@ -2844,6 +2868,17 @@ namespace ConsoleApp1
                     {
                         DeuxLandUntapTour2++;
                     }
+                    if ((etat.IsUntapped(terrain) && etat.nbBleu >= 1 && etat.nbTerrain > 0) || (etat.nbBleu >= 2 && etat.nbTerrain > 1) || (!terrain.IsBlue() && etat.nbBleu >= 1 && etat.nbTerrain > 1))
+                    {
+                        UnRetardBleuTour2++;
+                    }
+                }
+                else
+                {
+                    if (etat.nbBleu >= 1 && etat.nbTerrain >= 1)
+                    {
+                        UnRetardBleuTour2++;
+                    }
                 }
                 etat.tour++;
 
@@ -2857,6 +2892,18 @@ namespace ConsoleApp1
                     {
                         UnBleuTour3++;
                     }
+                    if (etat.IsUntapped(terrain) && etat.nbRouge >= 1 && etat.nbTerrain == 3)
+                    {
+                        unRougeTour3++;
+                    }
+                    if ((etat.IsUntapped(terrain) && etat.nbRouge >= 1 && etat.nbTerrain > 1) || (etat.nbRouge >= 2 && etat.nbTerrain > 2) || (!terrain.IsRed() && etat.nbRouge >= 1 && etat.nbTerrain > 2))
+                    {
+                        unRetardRougeTour3++;
+                    }
+                    if ((etat.IsUntapped(terrain) && etat.nbBleu >= 1 && etat.nbTerrain > 1) || (etat.nbBleu >= 2 && etat.nbTerrain > 2) || (!terrain.IsBlue() && etat.nbBleu >= 1 && etat.nbTerrain > 2))
+                    {
+                        UnRetardBleuTour3++;
+                    }
                     if (etat.nbTerrain == 3)
                     {
                         TroisLandTour3++;
@@ -2864,6 +2911,17 @@ namespace ConsoleApp1
                     if (etat.IsUntapped(terrain) && etat.nbTerrain == 3)
                     {
                         TroisLandUntapTour3++;
+                    }
+                }
+                else
+                {
+                    if (etat.nbRouge >= 1 && etat.nbTerrain >= 2)
+                    {
+                        unRetardRougeTour3++;
+                    }
+                    if (etat.nbBleu >= 1 && etat.nbTerrain >= 2)
+                    {
+                        UnRetardBleuTour3++;
                     }
                 }
                 etat.tour++;
@@ -2878,6 +2936,22 @@ namespace ConsoleApp1
                     {
                         DeuxNoirTour4++;
                     }
+                    if (etat.IsUntapped(terrain) && etat.nbBleu >= 1 && etat.nbTerrain == 4)
+                    {
+                        UnBleuTour4++;
+                    }
+                    if (etat.IsUntapped(terrain) && etat.nbRouge >= 3 && etat.nbTerrain == 4)
+                    {
+                        TroisRougeTour4++;
+                    }
+                    if ((etat.IsUntapped(terrain) && etat.nbBleu >= 1 && etat.nbTerrain > 2) || (etat.nbBleu >= 2 && etat.nbTerrain > 3) || (!terrain.IsBlue() && etat.nbBleu >= 1 && etat.nbTerrain > 3))
+                    {
+                        UnRetardBleuTour4++;
+                    }
+                    if ((etat.IsUntapped(terrain) && etat.nbRouge >= 1 && etat.nbTerrain > 2) || (etat.nbRouge >= 2 && etat.nbTerrain > 3) || (!terrain.IsRed() && etat.nbRouge >= 1 && etat.nbTerrain > 3))
+                    {
+                        unRetardRougeTour4++;
+                    }
                     if (etat.nbTerrain == 4)
                     {
                         QuatreLandTour4++;
@@ -2885,6 +2959,17 @@ namespace ConsoleApp1
                     if (etat.IsUntapped(terrain) && etat.nbTerrain == 4)
                     {
                         QuatreLandUntapTour4++;
+                    }
+                }
+                else
+                {
+                    if (etat.nbBleu >= 1 && etat.nbTerrain >= 3)
+                    {
+                        UnRetardBleuTour4++;
+                    }
+                    if (etat.nbRouge >= 1 && etat.nbTerrain >= 3)
+                    {
+                        unRetardRougeTour4++;
                     }
                 }
                 etat.tour++;
@@ -2899,7 +2984,15 @@ namespace ConsoleApp1
                     {
                         DeuxBleuTour5++;
                     }
-                    if (etat.nbTerrain > 3 && ((etat.IsUntapped(terrain) && etat.nbNoir >= 2) || etat.nbNoir >= 3 || (etat.nbNoir >= 2 && !terrain.IsBlack())))
+                    if ((etat.nbTerrain > 3 && etat.IsUntapped(terrain) && etat.nbRouge >= 3) || (etat.nbTerrain > 4 && etat.nbRouge >= 4) || (etat.nbTerrain > 4 && etat.nbRouge >= 3 && !terrain.IsRed()))
+                    {
+                        TroisRougeTour5++;
+                    }
+                    if ((etat.IsUntapped(terrain) && etat.nbBleu >= 1 && etat.nbTerrain > 3) || (etat.nbBleu >= 2 && etat.nbTerrain > 4) || (!terrain.IsBlue() && etat.nbBleu >= 1 && etat.nbTerrain > 4))
+                    {
+                        UnRetardBleuTour5++;
+                    }
+                    if ((etat.nbTerrain > 3 && etat.IsUntapped(terrain) && etat.nbNoir >= 2) || (etat.nbTerrain > 4 && etat.nbNoir >= 3) || (etat.nbTerrain > 4 && etat.nbNoir >= 2 && !terrain.IsBlack()))
                     {
                         DeuxNoirTour5++;
                     }
@@ -2912,6 +3005,17 @@ namespace ConsoleApp1
                         CinqLandUntapTour5++;
                     }
                 }
+                else
+                {
+                    if (etat.nbBleu >= 1 && etat.nbTerrain >= 4)
+                    {
+                        UnRetardBleuTour5++;
+                    }
+                    if (etat.nbNoir >= 2 && etat.nbTerrain >= 4)
+                    {
+                        DeuxNoirTour5++;
+                    }
+                }
                 etat.tour++;
 
                 //Tour6
@@ -2920,16 +3024,26 @@ namespace ConsoleApp1
                 if (terrain != null)
                 {
                     etat.PlayLand(terrain);
-                    if (etat.nbTerrain > 4 && ((etat.IsUntapped(terrain) && etat.nbRouge >= 2) || etat.nbNoir >= 4 || (etat.nbNoir >= 3 && !terrain.IsRed())))
+                    //if ((etat.nbTerrain > 4 && etat.IsUntapped(terrain) && etat.nbRouge >= 3) || (etat.nbTerrain > 5 && etat.nbRouge >= 4) || (etat.nbTerrain > 5 && etat.nbRouge >= 3 && !terrain.IsRed()))
+                    //{
+                    //    TroisRougeTour6++;
+                    //}
+                    //if ((etat.nbTerrain > 3 && etat.IsUntapped(terrain) && etat.nbNoir >= 2) || (etat.nbTerrain > 4 && etat.nbNoir >= 3) || (etat.nbTerrain > 4 && etat.nbNoir >= 2 && !terrain.IsBlack()))
+                    //{
+                    //    DeuxNoirTour6++;
+                    //}
+                    if ((etat.nbTerrain > 4 && etat.IsUntapped(terrain) && etat.nbBleu >= 2) || (etat.nbTerrain > 5 && etat.nbBleu >= 3) || (etat.nbTerrain > 5 && etat.nbBleu >= 2 && !terrain.IsBlue()))
                     {
-                        TroisRougeTour6++;
-                    }
-                    if (etat.nbTerrain > 3 && ((etat.IsUntapped(terrain) && etat.nbNoir >= 2) || etat.nbNoir >= 3 || (etat.nbNoir >= 2 && !terrain.IsBlack())))
-                    {
-                        DeuxNoirTour6++;
+                        DeuxRetardBleusTour6++;
                     }
                 }
-
+                else
+                {
+                    if (etat.nbBleu >= 2 && etat.nbTerrain >= 5)
+                    {
+                        DeuxRetardBleusTour6++;
+                    }
+                }
 
             } // end of iterations
 
@@ -2979,8 +3093,17 @@ namespace ConsoleApp1
                 nouvelleCombinaison.UnRougeTour2 = UnRougeTour2 / NrIterations;
                 nouvelleCombinaison.UnBleuTour3 = UnBleuTour3 / NrIterations;
                 nouvelleCombinaison.DeuxBleuTour5 = DeuxBleuTour5 / NrIterations;
-                nouvelleCombinaison.DeuxNoirTour6 = DeuxNoirTour6 / NrIterations;
-                nouvelleCombinaison.TroisRougeTour6 = TroisRougeTour6 / NrIterations;
+                nouvelleCombinaison.UnRetardBleuTour2 = UnRetardBleuTour2 / NrIterations;
+                nouvelleCombinaison.unRetardRougeTour3 = unRetardRougeTour3 / NrIterations;
+                nouvelleCombinaison.UnRetardBleuTour3 = UnRetardBleuTour3 / NrIterations;
+                nouvelleCombinaison.UnRetardBleuTour4 = UnRetardBleuTour4 / NrIterations;
+                nouvelleCombinaison.unRetardRougeTour4 = unRetardRougeTour4 / NrIterations;
+                nouvelleCombinaison.UnBleuTour4 = UnBleuTour4 / NrIterations;
+                nouvelleCombinaison.unRougeTour3 = unRougeTour3 / NrIterations;
+                nouvelleCombinaison.TroisRougeTour4 = TroisRougeTour4 / NrIterations;
+                nouvelleCombinaison.TroisRougeTour5 = TroisRougeTour5 / NrIterations;
+                nouvelleCombinaison.UnRetardBleuTour5 = UnRetardBleuTour5 / NrIterations;
+                nouvelleCombinaison.DeuxRetardBleusTour6 = DeuxRetardBleusTour6 / NrIterations;
                 nouvelleCombinaison.UnLandUntapTour1 = UnLandUntapTour1 / NrIterations;
                 nouvelleCombinaison.DeuxLandUntapTour2 = DeuxLandUntapTour2 / NrIterations;
                 nouvelleCombinaison.TroisLandUntapTour3 = TroisLandUntapTour3 / NrIterations;
