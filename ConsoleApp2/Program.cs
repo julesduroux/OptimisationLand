@@ -20,6 +20,7 @@ namespace ConsoleApp1
             public bool marais = false;
             public bool hub = false;
             public bool basic = false;
+            public string nom;
 
             public bool IsRed()
             {
@@ -71,6 +72,7 @@ namespace ConsoleApp1
                     card.ile = true;
                     card.basic = true;
                     deck.Add(card);
+                    card.nom = "ile";
                 }
                 for (int j = 1; j <= montagne; j++)
                 {
@@ -78,6 +80,7 @@ namespace ConsoleApp1
                     card.montagne = true;
                     card.basic = true;
                     deck.Add(card);
+                    card.nom = "montagne";
                 }
                 for (int j = 1; j <= marais; j++)
                 {
@@ -85,12 +88,14 @@ namespace ConsoleApp1
                     card.marais = true;
                     card.basic = true;
                     deck.Add(card);
+                    card.nom = "marais";
                 }
                 for (int j = 1; j <= aetherHub; j++)
                 {
                     Card card = new Card();
                     card.hub = true;
                     deck.Add(card);
+                    card.nom = "aetherHub";
                 }
                 for (int j = 1; j <= SommetCraneDragon; j++)
                 {
@@ -98,6 +103,7 @@ namespace ConsoleApp1
                     card.TapSansMontage = true;
                     card.TapSansMarais = true;
                     deck.Add(card);
+                    card.nom = "SommetCraneDragon";
                 }
                 for (int j = 1; j <= CanyonCroupissant; j++)
                 {
@@ -106,12 +112,14 @@ namespace ConsoleApp1
                     card.montagne = true;
                     card.tapped = true;
                     deck.Add(card);
+                    card.nom = "CanyonCroupissant";
                 }
                 for (int j = 1; j <= SpireBlufCanal; j++)
                 {
                     Card card = new Card();
                     card.fastland = true;
                     deck.Add(card);
+                    card.nom = "SpireBlufCanal";
                 }
                 for (int j = 1; j <= ChuteSoufre; j++)
                 {
@@ -119,6 +127,7 @@ namespace ConsoleApp1
                     card.TapSansMontage = true;
                     card.TapSansIle = true;
                     deck.Add(card);
+                    card.nom = "marais";
                 }
                 for (int j = 1; j <= CatacombesNoyees; j++)
                 {
@@ -126,6 +135,7 @@ namespace ConsoleApp1
                     card.TapSansIle = true;
                     card.TapSansMarais = true;
                     deck.Add(card);
+                    card.nom = "CatacombesNoyees";
                 }
                 for (int j = 1; j <= BassinFetides; j++)
                 {
@@ -134,6 +144,7 @@ namespace ConsoleApp1
                     card.ile = true;
                     card.tapped = true;
                     deck.Add(card);
+                    card.nom = "BassinFetides";
                 }
 
                 // le reste est autre chose 
@@ -1245,8 +1256,8 @@ namespace ConsoleApp1
                     {
                         if (carte.tapped && carte.ile)
                         {
-                            //on préfère jouer un cycle land rouge/noir si on a déjà du bleu
-                            if (nbBleu > 0)
+                            //on préfère jouer un cycle land rouge/noir si on a que un seul bleu
+                            if (nbBleu > 1)
                             {
                                 foreach (Card carte2 in main)
                                 {
@@ -2564,7 +2575,7 @@ namespace ConsoleApp1
         static void Main(string[] args)
         {
 
-            int NrIterations = 50000; //ajouter un 0
+            int NrIterations = 1000000;
             bool SurLePlay = true;
             int nbcartes = 60;
             int failsSuccessifs = 0;
@@ -2590,77 +2601,83 @@ namespace ConsoleApp1
             int montagne = 0;
             int marais = 0;
 
+            int oldnrd;
+            int rndom=0;
             //Générer une séquence aléatoire de 24 terrains
             while (true)
             {
                 Random rnd = new Random();
-                switch (rnd.Next(1, 10))
-                {
-                    case (1):
-                        if (aetherHub < 4)
-                        {
-                            aetherHub++;
+                oldnrd = rndom;
+                rndom = rnd.Next(1, 11);
+                if (rndom != oldnrd)
+                { 
+                    switch (rnd.Next(1, 11))
+                    {
+                        case (1):
+                            if (aetherHub < 4)
+                            {
+                                aetherHub++;
+                                totterrains++;
+                            }
+                            break;
+                        case (2):
+                            if (SommetCraneDragon < 4)
+                            {
+                                SommetCraneDragon++;
+                                totterrains++;
+                            }
+                            break;
+                        case (3):
+                            if (CanyonCroupissant < 4)
+                            {
+                                CanyonCroupissant++;
+                                totterrains++;
+                            }
+                            break;
+                        case (4):
+                            if (SpireBlufCanal < 4)
+                            {
+                                SpireBlufCanal++;
+                                totterrains++;
+                            }
+                            break;
+                        case (5):
+                            if (ChuteSoufre < 4)
+                            {
+                                ChuteSoufre++;
+                                totterrains++;
+                            }
+                            break;
+                        case (6):
+                            if (BassinFetides < 4)
+                            {
+                                BassinFetides++;
+                                totterrains++;
+                            }
+                            break;
+                        case (7):
+                            ile++;
                             totterrains++;
-                        }
-                        break;
-                    case (2):
-                        if (SommetCraneDragon < 4)
-                        {
-                            SommetCraneDragon++;
+                            break;
+                        case (8):
+                            montagne++;
                             totterrains++;
-                        }
-                        break;
-                    case (3):
-                        if (CanyonCroupissant < 4)
-                        {
-                            CanyonCroupissant++;
+                            break;
+                        case (9):
+                            marais++;
                             totterrains++;
-                        }
-                        break;
-                    case (4):
-                        if (SpireBlufCanal < 4)
-                        {
-                            SpireBlufCanal++;
-                            totterrains++;
-                        }
-                        break;
-                    case (5):
-                        if (ChuteSoufre < 4)
-                        {
-                            ChuteSoufre++;
-                            totterrains++;
-                        }
-                        break;
-                    case (6):
-                        if (BassinFetides < 4)
-                        {
-                            BassinFetides++;
-                            totterrains++;
-                        }
-                        break;
-                    case (7):
-                        ile++;
-                        totterrains++;
-                        break;
-                    case (8):
-                        montagne++;
-                        totterrains++;
-                        break;
-                    case (9):
-                        marais++;
-                        totterrains++;
-                        break;
-                    case (10):
-                        if (CatacombesNoyees < 4)
-                        {
-                            CatacombesNoyees++;
-                            totterrains++;
-                        }
-                        break;
-                    default:
-                        break;
+                            break;
+                        case (10):
+                            if (CatacombesNoyees < 4)
+                            {
+                                CatacombesNoyees++;
+                                totterrains++;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
                 }
-
 
                 //Vérifier que la séquence n'est pas déjà prise
                 if (totterrains == nbterraindansdeck)
@@ -2731,7 +2748,6 @@ namespace ConsoleApp1
             double Mulligan5 = 0;
             double Mulligan4 = 0;
 
-            string filename = @"C:\Users\Jules\Desktop\60, 7, 5, 0, 4, 1, 3, 4, 0, 0, 0.txt";
 
             for (int i = 1; i <= NrIterations; i++)
             {
@@ -2955,32 +2971,34 @@ namespace ConsoleApp1
                 nouvelleCombinaison.ile = ile;
                 nouvelleCombinaison.montagne = montagne;
                 nouvelleCombinaison.marais = marais;
-                UnLandTour1 = UnLandTour1 / NrIterations;
-                DeuxLandTour2 = DeuxLandTour2 / NrIterations;
-                TroisLandTour3 = TroisLandTour3 / NrIterations;
-                QuatreLandTour4 = QuatreLandTour4 / NrIterations;
-                CinqLandTour5 = CinqLandTour5 / NrIterations;
-                UnRougeTour2 = UnRougeTour2 / NrIterations;
-                UnBleuTour3 = UnBleuTour3 / NrIterations;
-                DeuxBleuTour5 = DeuxBleuTour5 / NrIterations;
-                DeuxNoirTour6 = DeuxNoirTour6 / NrIterations;
-                TroisRougeTour6 = TroisRougeTour6 / NrIterations;
-                UnLandUntapTour1 = UnLandUntapTour1 / NrIterations;
-                DeuxLandUntapTour2 = DeuxLandUntapTour2 / NrIterations;
-                TroisLandUntapTour3 = TroisLandUntapTour3 / NrIterations;
-                QuatreLandUntapTour4 = QuatreLandUntapTour4 / NrIterations;
-                CinqLandUntapTour5 = CinqLandUntapTour5 / NrIterations;
-                UnBleuTour1 = UnBleuTour1 / NrIterations;
-                UnBleuTour2 = UnBleuTour2 / NrIterations;
-                DeuxNoirTour4 = DeuxNoirTour4 / NrIterations;
-                DeuxNoirTour5 = DeuxNoirTour5 / NrIterations;
-                SansMulligan = SansMulligan / NrIterations;
-                Mulligan6 = Mulligan6 / NrIterations;
-                Mulligan5 = Mulligan5 / NrIterations;
-                Mulligan4 = Mulligan4 / NrIterations;
+                nouvelleCombinaison.UnLandTour1 = UnLandTour1 / NrIterations;
+                nouvelleCombinaison.DeuxLandTour2 = DeuxLandTour2 / NrIterations;
+                nouvelleCombinaison.TroisLandTour3 = TroisLandTour3 / NrIterations;
+                nouvelleCombinaison.QuatreLandTour4 = QuatreLandTour4 / NrIterations;
+                nouvelleCombinaison.CinqLandTour5 = CinqLandTour5 / NrIterations;
+                nouvelleCombinaison.UnRougeTour2 = UnRougeTour2 / NrIterations;
+                nouvelleCombinaison.UnBleuTour3 = UnBleuTour3 / NrIterations;
+                nouvelleCombinaison.DeuxBleuTour5 = DeuxBleuTour5 / NrIterations;
+                nouvelleCombinaison.DeuxNoirTour6 = DeuxNoirTour6 / NrIterations;
+                nouvelleCombinaison.TroisRougeTour6 = TroisRougeTour6 / NrIterations;
+                nouvelleCombinaison.UnLandUntapTour1 = UnLandUntapTour1 / NrIterations;
+                nouvelleCombinaison.DeuxLandUntapTour2 = DeuxLandUntapTour2 / NrIterations;
+                nouvelleCombinaison.TroisLandUntapTour3 = TroisLandUntapTour3 / NrIterations;
+                nouvelleCombinaison.QuatreLandUntapTour4 = QuatreLandUntapTour4 / NrIterations;
+                nouvelleCombinaison.CinqLandUntapTour5 = CinqLandUntapTour5 / NrIterations;
+                nouvelleCombinaison.UnBleuTour1 = UnBleuTour1 / NrIterations;
+                nouvelleCombinaison.UnBleuTour2 = UnBleuTour2 / NrIterations;
+                nouvelleCombinaison.DeuxNoirTour4 = DeuxNoirTour4 / NrIterations;
+                nouvelleCombinaison.DeuxNoirTour5 = DeuxNoirTour5 / NrIterations;
+                nouvelleCombinaison.SansMulligan = SansMulligan / NrIterations;
+                nouvelleCombinaison.Mulligan6 = Mulligan6 / NrIterations;
+                nouvelleCombinaison.Mulligan5 = Mulligan5 / NrIterations;
+                nouvelleCombinaison.Mulligan4 = Mulligan4 / NrIterations;
                 db.Combinaisons.Add(nouvelleCombinaison);
                 db.SaveChanges();
             }
+
+            goto Initialiser;
 
             fin:
             Console.WriteLine("Press any key to exit.");
