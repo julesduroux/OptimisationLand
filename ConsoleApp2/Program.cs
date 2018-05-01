@@ -54,10 +54,10 @@ namespace ConsoleApp1
             public int tour = 1;
             List<Card> deck = new List<Card>();
             List<Card> main = new List<Card>();
-            public int nbTerrain=0;
-            public int nbBleu =0;
-            public int nbNoir =0;
-            public int nbRouge =0;
+            public int nbTerrain = 0;
+            public int nbBleu = 0;
+            public int nbNoir = 0;
+            public int nbRouge = 0;
             bool basicIlsandInPlay = false;
             bool basicMoutainInPlay = false;
             bool basicSwampInPlay = false;
@@ -313,7 +313,7 @@ namespace ConsoleApp1
                     }
 
                 }
-                
+
                 if (nbTerrain == 1)
                 {
                     //On joue fastland si possible
@@ -373,7 +373,7 @@ namespace ConsoleApp1
                         //Lands qui nous ajoutent le bleu et qui arrivent dégagés
                         if (nbBleu == 0)
                         {
-                            
+
                             if (basicIlsandInPlay || basicSwampInPlay)
                             {
                                 foreach (Card carte in main)
@@ -488,7 +488,7 @@ namespace ConsoleApp1
                     }
 
                     //Si on a pas moyen d'avoi deux terrains dégagés dont au moins un rouge, autant privilégier les lands qui arrivent engagés
-                    
+
                     //jouer un cycle land bleu/noir sauf si on a déjà du bleu et qu'on pourrait avoir du rouge
                     foreach (Card carte in main)
                     {
@@ -790,7 +790,7 @@ namespace ConsoleApp1
                                     }
                                 }
                             }
-                            
+
                             //ile
                             foreach (Card carte in main)
                             {
@@ -808,7 +808,7 @@ namespace ConsoleApp1
                                     return carte;
                                 }
                             }
-                            
+
                         }
                     }
 
@@ -953,7 +953,7 @@ namespace ConsoleApp1
                             return carte;
                         }
                     }
-                    
+
                     //aether hub
                     foreach (Card carte in main)
                     {
@@ -1446,7 +1446,7 @@ namespace ConsoleApp1
 
                 if (nbTerrain == 4)
                 {
-                    if (nbBleu ==0)
+                    if (nbBleu == 0)
                     {
                         //on vise les 2 manas noirs
                         if (nbNoir == 1)
@@ -2461,7 +2461,7 @@ namespace ConsoleApp1
                     return true;
                 }
 
-                if (terrain.fastland && tour <=3)
+                if (terrain.fastland && tour <= 3)
                 {
                     return true;
                 }
@@ -2502,7 +2502,7 @@ namespace ConsoleApp1
                 int nb = 0;
                 foreach (Card carte in main)
                 {
-                   if (carte.isLand)
+                    if (carte.isLand)
                     {
                         nb++;
                     }
@@ -2572,7 +2572,7 @@ namespace ConsoleApp1
             //Itérer sur les combinaisons :
 
             Initialiser:
-            
+
             int totterrains = 0;
             int nbterraindansdeck = 24;
 
@@ -2665,7 +2665,7 @@ namespace ConsoleApp1
                 //Vérifier que la séquence n'est pas déjà prise
                 if (totterrains == nbterraindansdeck)
                 {
-                    
+
                     bool exist = false;
                     //tester que la série n'a pas déjà été testée
                     using (var db = new CombinaisonDbContext())
@@ -2703,7 +2703,7 @@ namespace ConsoleApp1
                 }
             }
 
-        TesterCombinaison:
+            TesterCombinaison:
             //Objectifs principaux
             double UnLandTour1 = 0;
             double DeuxLandTour2 = 0;
@@ -2741,7 +2741,7 @@ namespace ConsoleApp1
                 //etat.SetDeck(int nbCartes, int ile, int montagne, int marais, int aetherHub, int SommetCraneDragon, int CanyonCroupissant, int SpireBlufCanal, int ChuteSoufre, int CatacombesNoyees, int BassinFetides);
 
                 etat.SetDeck(nbcartes, ile, montagne, marais, aetherHub, SommetCraneDragon, CanyonCroupissant, SpireBlufCanal, ChuteSoufre, CatacombesNoyees, BassinFetides);
-                
+
 
                 //Piocher la main de départ
                 etat.DrawCard(7);
@@ -2773,7 +2773,7 @@ namespace ConsoleApp1
                     {
                         Mulligan6++;
                     }
-                    
+
                     //regard 1
                     //TODO ou pas car on garde aussi des mains non gardables avec des mains qui ne gagnent pas
                     // TODO : géréer le cas de plusieurs hubs
@@ -2883,7 +2883,7 @@ namespace ConsoleApp1
                     {
                         DeuxBleuTour5++;
                     }
-                    if (etat.nbTerrain > 3 && ((etat.IsUntapped(terrain) && etat.nbNoir >= 2) || etat.nbNoir >= 3 || (etat.nbNoir >= 2 && !terrain.IsBlack() )) )
+                    if (etat.nbTerrain > 3 && ((etat.IsUntapped(terrain) && etat.nbNoir >= 2) || etat.nbNoir >= 3 || (etat.nbNoir >= 2 && !terrain.IsBlack())))
                     {
                         DeuxNoirTour5++;
                     }
@@ -2913,7 +2913,7 @@ namespace ConsoleApp1
                         DeuxNoirTour6++;
                     }
                 }
-                
+
 
             } // end of iterations
 
@@ -2982,7 +2982,7 @@ namespace ConsoleApp1
                 db.SaveChanges();
             }
 
-        fin:
+            fin:
             Console.WriteLine("Press any key to exit.");
             Console.ReadKey();
         }
