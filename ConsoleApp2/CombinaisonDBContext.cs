@@ -13,5 +13,7 @@
 
         }
         public DbSet<Combinaison> Combinaisons { get; set; }
+        public DbSet<Championnat> Championnat { get; set; }
     }
+
 }

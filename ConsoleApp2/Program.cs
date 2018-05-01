@@ -2584,29 +2584,170 @@ namespace ConsoleApp1
             bool SurLePlay = true;
             int nbcartes = 60;
             int failsSuccessifs = 0;
+            bool modemanuel = false;
+            bool modeChampionnat = false;
+            bool modeDiscovey = true;
 
-            //Itérer sur les combinaisons :
+            //Non basic
+            short aetherHub = -1;
+            short SommetCraneDragon = -1;
+            short CanyonCroupissant = -1;
+            short SpireBlufCanal = -1;
+            short ChuteSoufre = -1;
+            short CatacombesNoyees = -1;
+            short BassinFetides = -1;
 
-            Initialiser:
+            //Basic
+            short ile = -1;
+            short montagne = -1;
+            short marais = -1;
+
+            //Afficher la possibilité à l'utilisateur de rentrer une manabase
+            Mode_Manuel:
+            int choix;
+            if (modemanuel)
+            {
+                choix = 1;
+            }
+            else if (modeChampionnat)
+            {
+                choix = 2;
+            }
+            else
+            {
+                Console.WriteLine("Si vous voulez rentrer une manabase, tapez 1. Si vous voulez lancer Championnat tapez 2. Pour Discovery, tapez autre chose");
+                int.TryParse(Console.ReadLine(), out choix);
+            }
+            if (choix == 1)
+            {
+                modemanuel = true;
+                modeDiscovey = false;
+                while (aetherHub > 5 || aetherHub < 0)
+                {
+                    Console.WriteLine("nombre d'Aether hub entre 0 et 4");
+                    int.TryParse(Console.ReadLine(), out choix);
+                    aetherHub = (Int16)choix;
+                }
+                while (SommetCraneDragon > 5 || SommetCraneDragon < 0)
+                {
+                    Console.WriteLine("nombre de Sommet du CrâneDragon entre 0 et 4 (tapland noir/rouge)");
+                    int.TryParse(Console.ReadLine(), out choix);
+                    SommetCraneDragon = (Int16)choix;
+                }
+                while (CanyonCroupissant > 5 || CanyonCroupissant < 0)
+                {
+                    Console.WriteLine("nombre de Canyon Croupissant entre 0 et 4  (cycle land noir/rouge)");
+                    int.TryParse(Console.ReadLine(), out choix);
+                    CanyonCroupissant = (Int16)choix;
+                }
+                while (SpireBlufCanal > 5 || SpireBlufCanal < 0)
+                {
+                    Console.WriteLine("nombre de SpireBluf Canal entre 0 et 4 (fastland bleu/rouge)");
+                    int.TryParse(Console.ReadLine(), out choix);
+                    SpireBlufCanal = (Int16)choix;
+                }
+                while (ChuteSoufre > 5 || ChuteSoufre < 0)
+                {
+                    Console.WriteLine("nombre de Chute de Soufre entre 0 et 4 (tapland bleu/rouge)");
+                    int.TryParse(Console.ReadLine(), out choix);
+                    ChuteSoufre = (Int16)choix;
+                }
+                while (CatacombesNoyees > 5 || CatacombesNoyees < 0)
+                {
+                    Console.WriteLine("nombre de Catacombes Noyées entre 0 et 4 (tapland bleu/noir)");
+                    int.TryParse(Console.ReadLine(), out choix);
+                    CatacombesNoyees = (Int16)choix;
+                }
+                while (BassinFetides > 5 || BassinFetides < 0)
+                {
+                    Console.WriteLine("nombre de Bassin Fétides entre 0 et 4 (tapland noir/bleu)");
+                    int.TryParse(Console.ReadLine(), out choix);
+                    BassinFetides = (Int16)choix;
+                }
+                while (ile < 0)
+                {
+                    Console.WriteLine("nombre d'île");
+                    int.TryParse(Console.ReadLine(), out choix);
+                    ile = (Int16)choix;
+                }
+                while (montagne < 0)
+                {
+                    Console.WriteLine("nombre de montagne");
+                    int.TryParse(Console.ReadLine(), out choix);
+                    montagne = (Int16)choix;
+                }
+                while (marais < 0)
+                {
+                    Console.WriteLine("nombre de marais");
+                    int.TryParse(Console.ReadLine(), out choix);
+                    marais = (Int16)choix;
+                }
+
+                goto TesterCombinaison;
+
+            }
+            else if (choix == 2)
+            {
+                modeDiscovey = false;
+                modeChampionnat = true;
+                NrIterations = 50000000;
+                //On boucle sur les meilleurs résultats de discovery jusqu'à ce qu'on en trouve un qui n'ai pas encore été décortiqué
+                using (var db = new CombinaisonDbContext())
+                {
+                    Combinaison combi = (from c in db.Combinaisons
+                                         where !db.Championnat.Any(o => o.aetherHub == c.aetherHub
+                                            && o.SommetCraneDragon == c.SommetCraneDragon
+                                            && o.CanyonCroupissant == c.CanyonCroupissant
+                                            && o.ChuteSoufre == c.ChuteSoufre
+                                            && o.CatacombesNoyees == c.CatacombesNoyees
+                                            && o.SpireBlufCanal == c.SpireBlufCanal
+                                            && o.BassinFetides == c.BassinFetides
+                                            && o.ile == c.ile
+                                            && o.montagne == c.montagne
+                                            && o.marais == c.marais)
+                                         select c).OrderByDescending(c => (double)c.score)
+                                         .First();
+
+                    aetherHub = combi.aetherHub;
+                    SommetCraneDragon = combi.SommetCraneDragon;
+                    CanyonCroupissant = combi.CanyonCroupissant;
+                    SpireBlufCanal = combi.SpireBlufCanal;
+                    ChuteSoufre = combi.ChuteSoufre;
+                    CatacombesNoyees = combi.CatacombesNoyees;
+                    BassinFetides = combi.BassinFetides;
+
+                    //Basic
+                    ile = combi.ile;
+                    montagne = combi.montagne;
+                    marais = combi.marais;
+                }
+               
+
+                goto TesterCombinaison;
+                
+
+            }
+
+                //Itérer sur les combinaisons :
+                Initialiser:
 
             int totterrains = 0;
             int nbterraindansdeck = 24;
 
             //Non basic
-            int aetherHub = 0;
-            int SommetCraneDragon = 0;
-            int CanyonCroupissant = 0;
-            int SpireBlufCanal = 0;
-            int ChuteSoufre = 0;
-            int CatacombesNoyees = 0;
-            int BassinFetides = 0;
+            aetherHub = 0;
+            SommetCraneDragon = 0;
+            CanyonCroupissant = 0;
+            SpireBlufCanal = 0;
+            ChuteSoufre = 0;
+            CatacombesNoyees = 0;
+            BassinFetides = 0;
 
             //Basic
-            int ile = 0;
-            int montagne = 0;
-            int marais = 0;
+            ile = 0;
+            montagne = 0;
+            marais = 0;
 
-            int oldnrd;
             int rndom=0;
             //Générer une séquence aléatoire de 24 terrains
 
@@ -2736,41 +2877,41 @@ namespace ConsoleApp1
 
             TesterCombinaison:
             //Objectifs principaux
-            double UnLandTour1 = 0;
-            double DeuxLandTour2 = 0;
-            double TroisLandTour3 = 0;
-            double QuatreLandTour4 = 0;
-            double CinqLandTour5 = 0;
-            double UnRougeTour2 = 0;
-            double UnBleuTour3 = 0;
-            double DeuxBleuTour5 = 0;
-            double UnLandUntapTour1 = 0;
-            double DeuxLandUntapTour2 = 0;
-            double TroisLandUntapTour3 = 0;
-            double QuatreLandUntapTour4 = 0;
-            double CinqLandUntapTour5 = 0;
+            decimal UnLandTour1 = 0;
+            decimal DeuxLandTour2 = 0;
+            decimal TroisLandTour3 = 0;
+            decimal QuatreLandTour4 = 0;
+            decimal CinqLandTour5 = 0;
+            decimal UnRougeTour2 = 0;
+            decimal UnBleuTour3 = 0;
+            decimal DeuxBleuTour5 = 0;
+            decimal UnLandUntapTour1 = 0;
+            decimal DeuxLandUntapTour2 = 0;
+            decimal TroisLandUntapTour3 = 0;
+            decimal QuatreLandUntapTour4 = 0;
+            decimal CinqLandUntapTour5 = 0;
 
-            double UnRetardBleuTour2 = 0;
-            double unRetardRougeTour3 = 0;
-            double UnRetardBleuTour3 = 0;
-            double UnRetardBleuTour4 = 0;
-            double unRetardRougeTour4 = 0;
-            double TroisRougeTour4 = 0;
-            double TroisRougeTour5 = 0;
-            double UnRetardBleuTour5 = 0;
-            double DeuxRetardBleusTour6 = 0;
+            decimal UnRetardBleuTour2 = 0;
+            decimal unRetardRougeTour3 = 0;
+            decimal UnRetardBleuTour3 = 0;
+            decimal UnRetardBleuTour4 = 0;
+            decimal unRetardRougeTour4 = 0;
+            decimal TroisRougeTour4 = 0;
+            decimal TroisRougeTour5 = 0;
+            decimal UnRetardBleuTour5 = 0;
+            decimal DeuxRetardBleusTour6 = 0;
 
             //Objectifs Bonus
-            double UnBleuTour1 = 0;
-            double UnBleuTour2 = 0;
-            double DeuxNoirTour4 = 0;
-            double UnBleuTour4 = 0;
-            double unRougeTour3 = 0;
-            double DeuxNoirTour5 = 0;
-            double SansMulligan = 0;
-            double Mulligan6 = 0;
-            double Mulligan5 = 0;
-            double Mulligan4 = 0;
+            decimal UnBleuTour1 = 0;
+            decimal UnBleuTour2 = 0;
+            decimal DeuxNoirTour4 = 0;
+            decimal UnBleuTour4 = 0;
+            decimal unRougeTour3 = 0;
+            decimal DeuxNoirTour5 = 0;
+            decimal SansMulligan = 0;
+            decimal Mulligan6 = 0;
+            decimal Mulligan5 = 0;
+            decimal Mulligan4 = 0;
 
 
             for (int i = 1; i <= NrIterations; i++)
@@ -3047,79 +3188,126 @@ namespace ConsoleApp1
 
             } // end of iterations
 
+            decimal? scorePrimaire = UnBleuTour1 * 2 + UnRougeTour2 * 8 + UnBleuTour3 * 6 + UnBleuTour2 * 2 + UnBleuTour4 * 4 + TroisRougeTour4 * 3 + DeuxNoirTour4 * 2 + DeuxBleuTour5 * 3;
+            decimal? scoreSecondaire = (UnRetardBleuTour2 - UnBleuTour1) * 2 + (unRetardRougeTour3 - UnRougeTour2) * 8 + (UnRetardBleuTour3 - UnBleuTour2) * 2 + (UnRetardBleuTour4 - UnBleuTour3) * 6 + (UnRetardBleuTour5 - UnBleuTour4) * 4 + (unRetardRougeTour4 - unRougeTour3) * 1 + (TroisRougeTour5 - TroisRougeTour4) * 3 + (DeuxNoirTour5 - DeuxNoirTour4) * 2 + (DeuxRetardBleusTour6 - DeuxBleuTour5) * 3;
+            decimal? score = (scorePrimaire + (decimal)0.5 * scoreSecondaire) / NrIterations;
 
-            //using (System.IO.StreamWriter file = new System.IO.StreamWriter(filename, true))
-            //{ 
-            //    file.WriteLine("Requirements");
-            //    file.WriteLine("UnLandTour1 : " + UnLandTour1 / NrIterations + " dont untap : " + UnLandUntapTour1/ NrIterations);
-            //    file.WriteLine("DeuxLandTour2 : " + DeuxLandTour2 / NrIterations + " dont untap : " + DeuxLandUntapTour2 / NrIterations);
-            //    file.WriteLine("TroisLandTour3 : " + TroisLandTour3 / NrIterations + " dont untap : " + TroisLandUntapTour3 / NrIterations);
-            //    file.WriteLine("QuatreLandTour4 : " + QuatreLandTour4 / NrIterations + " dont untap : " + QuatreLandUntapTour4 / NrIterations);
-            //    file.WriteLine("CinqLandTour5 : " + CinqLandTour5 / NrIterations + " dont untap : " + CinqLandUntapTour5 / NrIterations);
-            //    file.WriteLine("UnRougeTour2 : " + UnRougeTour2 / NrIterations);
-            //    file.WriteLine("DeuxBleuTour5 : " + DeuxBleuTour5 / NrIterations);
-            //    file.WriteLine("DeuxNoirTour6 : " + DeuxNoirTour6 / NrIterations);
-            //    file.WriteLine("TroisRougeTour6 : " + TroisRougeTour6 / NrIterations);
-
-            //    file.WriteLine("Bonus");
-            //    file.WriteLine("UnBleuTour1 : " + UnBleuTour1 / NrIterations);
-            //    file.WriteLine("UnBleuTour2 : " + UnBleuTour2 / NrIterations);
-            //    file.WriteLine("DeuxNoirTour4 : " + DeuxNoirTour4 / NrIterations);
-            //    file.WriteLine("DeuxNoirTour5 : " + DeuxNoirTour5 / NrIterations);
-            //    file.WriteLine("SansMulligan : " + SansMulligan / NrIterations);
-            //    file.WriteLine("Mulligan6 : " + Mulligan6 / NrIterations);
-            //    file.WriteLine("Mulligan5 : " + Mulligan5 / NrIterations);
-            //    file.WriteLine("Mulligan4 : " + Mulligan4 / NrIterations);
-            //}
-
-            using (var db = new CombinaisonDbContext())
+            if (modeDiscovey)
             {
-                Combinaison nouvelleCombinaison = new Combinaison();
-                nouvelleCombinaison.aetherHub = aetherHub;
-                nouvelleCombinaison.SommetCraneDragon = SommetCraneDragon;
-                nouvelleCombinaison.CanyonCroupissant = CanyonCroupissant;
-                nouvelleCombinaison.ChuteSoufre = ChuteSoufre;
-                nouvelleCombinaison.CatacombesNoyees = CatacombesNoyees;
-                nouvelleCombinaison.SpireBlufCanal = SpireBlufCanal;
-                nouvelleCombinaison.BassinFetides = BassinFetides;
-                nouvelleCombinaison.ile = ile;
-                nouvelleCombinaison.montagne = montagne;
-                nouvelleCombinaison.marais = marais;
-                nouvelleCombinaison.UnLandTour1 = UnLandTour1 / NrIterations;
-                nouvelleCombinaison.DeuxLandTour2 = DeuxLandTour2 / NrIterations;
-                nouvelleCombinaison.TroisLandTour3 = TroisLandTour3 / NrIterations;
-                nouvelleCombinaison.QuatreLandTour4 = QuatreLandTour4 / NrIterations;
-                nouvelleCombinaison.CinqLandTour5 = CinqLandTour5 / NrIterations;
-                nouvelleCombinaison.UnRougeTour2 = UnRougeTour2 / NrIterations;
-                nouvelleCombinaison.UnBleuTour3 = UnBleuTour3 / NrIterations;
-                nouvelleCombinaison.DeuxBleuTour5 = DeuxBleuTour5 / NrIterations;
-                nouvelleCombinaison.UnRetardBleuTour2 = UnRetardBleuTour2 / NrIterations;
-                nouvelleCombinaison.unRetardRougeTour3 = unRetardRougeTour3 / NrIterations;
-                nouvelleCombinaison.UnRetardBleuTour3 = UnRetardBleuTour3 / NrIterations;
-                nouvelleCombinaison.UnRetardBleuTour4 = UnRetardBleuTour4 / NrIterations;
-                nouvelleCombinaison.unRetardRougeTour4 = unRetardRougeTour4 / NrIterations;
-                nouvelleCombinaison.UnBleuTour4 = UnBleuTour4 / NrIterations;
-                nouvelleCombinaison.unRougeTour3 = unRougeTour3 / NrIterations;
-                nouvelleCombinaison.TroisRougeTour4 = TroisRougeTour4 / NrIterations;
-                nouvelleCombinaison.TroisRougeTour5 = TroisRougeTour5 / NrIterations;
-                nouvelleCombinaison.UnRetardBleuTour5 = UnRetardBleuTour5 / NrIterations;
-                nouvelleCombinaison.DeuxRetardBleusTour6 = DeuxRetardBleusTour6 / NrIterations;
-                nouvelleCombinaison.UnLandUntapTour1 = UnLandUntapTour1 / NrIterations;
-                nouvelleCombinaison.DeuxLandUntapTour2 = DeuxLandUntapTour2 / NrIterations;
-                nouvelleCombinaison.TroisLandUntapTour3 = TroisLandUntapTour3 / NrIterations;
-                nouvelleCombinaison.QuatreLandUntapTour4 = QuatreLandUntapTour4 / NrIterations;
-                nouvelleCombinaison.CinqLandUntapTour5 = CinqLandUntapTour5 / NrIterations;
-                nouvelleCombinaison.UnBleuTour1 = UnBleuTour1 / NrIterations;
-                nouvelleCombinaison.UnBleuTour2 = UnBleuTour2 / NrIterations;
-                nouvelleCombinaison.DeuxNoirTour4 = DeuxNoirTour4 / NrIterations;
-                nouvelleCombinaison.DeuxNoirTour5 = DeuxNoirTour5 / NrIterations;
-                nouvelleCombinaison.SansMulligan = SansMulligan / NrIterations;
-                nouvelleCombinaison.Mulligan6 = Mulligan6 / NrIterations;
-                nouvelleCombinaison.Mulligan5 = Mulligan5 / NrIterations;
-                nouvelleCombinaison.Mulligan4 = Mulligan4 / NrIterations;
-                db.Combinaisons.Add(nouvelleCombinaison);
-                db.SaveChanges();
+                using (var db = new CombinaisonDbContext())
+                {
+                    Combinaison nouvelleCombinaison = new Combinaison();
+                    nouvelleCombinaison.score = score;
+                    nouvelleCombinaison.score_primaire = scorePrimaire;
+                    nouvelleCombinaison.score_secondaire = scoreSecondaire;
+                    nouvelleCombinaison.aetherHub = aetherHub;
+                    nouvelleCombinaison.SommetCraneDragon = SommetCraneDragon;
+                    nouvelleCombinaison.CanyonCroupissant = CanyonCroupissant;
+                    nouvelleCombinaison.ChuteSoufre = ChuteSoufre;
+                    nouvelleCombinaison.CatacombesNoyees = CatacombesNoyees;
+                    nouvelleCombinaison.SpireBlufCanal = SpireBlufCanal;
+                    nouvelleCombinaison.BassinFetides = BassinFetides;
+                    nouvelleCombinaison.ile = ile;
+                    nouvelleCombinaison.montagne = montagne;
+                    nouvelleCombinaison.marais = marais;
+                    nouvelleCombinaison.UnLandTour1 = UnLandTour1 / NrIterations;
+                    nouvelleCombinaison.DeuxLandTour2 = DeuxLandTour2 / NrIterations;
+                    nouvelleCombinaison.TroisLandTour3 = TroisLandTour3 / NrIterations;
+                    nouvelleCombinaison.QuatreLandTour4 = QuatreLandTour4 / NrIterations;
+                    nouvelleCombinaison.CinqLandTour5 = CinqLandTour5 / NrIterations;
+                    nouvelleCombinaison.UnRougeTour2 = UnRougeTour2 / NrIterations;
+                    nouvelleCombinaison.UnBleuTour3 = UnBleuTour3 / NrIterations;
+                    nouvelleCombinaison.DeuxBleuTour5 = DeuxBleuTour5 / NrIterations;
+                    nouvelleCombinaison.UnRetardBleuTour2 = UnRetardBleuTour2 / NrIterations;
+                    nouvelleCombinaison.unRetardRougeTour3 = unRetardRougeTour3 / NrIterations;
+                    nouvelleCombinaison.UnRetardBleuTour3 = UnRetardBleuTour3 / NrIterations;
+                    nouvelleCombinaison.UnRetardBleuTour4 = UnRetardBleuTour4 / NrIterations;
+                    nouvelleCombinaison.unRetardRougeTour4 = unRetardRougeTour4 / NrIterations;
+                    nouvelleCombinaison.UnBleuTour4 = UnBleuTour4 / NrIterations;
+                    nouvelleCombinaison.unRougeTour3 = unRougeTour3 / NrIterations;
+                    nouvelleCombinaison.TroisRougeTour4 = TroisRougeTour4 / NrIterations;
+                    nouvelleCombinaison.TroisRougeTour5 = TroisRougeTour5 / NrIterations;
+                    nouvelleCombinaison.UnRetardBleuTour5 = UnRetardBleuTour5 / NrIterations;
+                    nouvelleCombinaison.DeuxRetardBleusTour6 = DeuxRetardBleusTour6 / NrIterations;
+                    nouvelleCombinaison.UnLandUntapTour1 = UnLandUntapTour1 / NrIterations;
+                    nouvelleCombinaison.DeuxLandUntapTour2 = DeuxLandUntapTour2 / NrIterations;
+                    nouvelleCombinaison.TroisLandUntapTour3 = TroisLandUntapTour3 / NrIterations;
+                    nouvelleCombinaison.QuatreLandUntapTour4 = QuatreLandUntapTour4 / NrIterations;
+                    nouvelleCombinaison.CinqLandUntapTour5 = CinqLandUntapTour5 / NrIterations;
+                    nouvelleCombinaison.UnBleuTour1 = UnBleuTour1 / NrIterations;
+                    nouvelleCombinaison.UnBleuTour2 = UnBleuTour2 / NrIterations;
+                    nouvelleCombinaison.DeuxNoirTour4 = DeuxNoirTour4 / NrIterations;
+                    nouvelleCombinaison.DeuxNoirTour5 = DeuxNoirTour5 / NrIterations;
+                    nouvelleCombinaison.SansMulligan = SansMulligan / NrIterations;
+                    nouvelleCombinaison.Mulligan6 = Mulligan6 / NrIterations;
+                    nouvelleCombinaison.Mulligan5 = Mulligan5 / NrIterations;
+                    nouvelleCombinaison.Mulligan4 = Mulligan4 / NrIterations;
+                    db.Combinaisons.Add(nouvelleCombinaison);
+                    db.SaveChanges();
+                }
             }
+            
+            if (modeChampionnat)
+            {
+                using (var db = new CombinaisonDbContext())
+                {
+                    Championnat nouvelleCombinaison = new Championnat();
+                    nouvelleCombinaison.score = score;
+                    nouvelleCombinaison.score_primaire = scorePrimaire;
+                    nouvelleCombinaison.score_secondaire = scoreSecondaire;
+                    nouvelleCombinaison.aetherHub = aetherHub;
+                    nouvelleCombinaison.SommetCraneDragon = SommetCraneDragon;
+                    nouvelleCombinaison.CanyonCroupissant = CanyonCroupissant;
+                    nouvelleCombinaison.ChuteSoufre = ChuteSoufre;
+                    nouvelleCombinaison.CatacombesNoyees = CatacombesNoyees;
+                    nouvelleCombinaison.SpireBlufCanal = SpireBlufCanal;
+                    nouvelleCombinaison.BassinFetides = BassinFetides;
+                    nouvelleCombinaison.ile = ile;
+                    nouvelleCombinaison.montagne = montagne;
+                    nouvelleCombinaison.marais = marais;
+                    nouvelleCombinaison.UnLandTour1 = UnLandTour1 / NrIterations;
+                    nouvelleCombinaison.DeuxLandTour2 = DeuxLandTour2 / NrIterations;
+                    nouvelleCombinaison.TroisLandTour3 = TroisLandTour3 / NrIterations;
+                    nouvelleCombinaison.QuatreLandTour4 = QuatreLandTour4 / NrIterations;
+                    nouvelleCombinaison.CinqLandTour5 = CinqLandTour5 / NrIterations;
+                    nouvelleCombinaison.UnRougeTour2 = UnRougeTour2 / NrIterations;
+                    nouvelleCombinaison.UnBleuTour3 = UnBleuTour3 / NrIterations;
+                    nouvelleCombinaison.DeuxBleuTour5 = DeuxBleuTour5 / NrIterations;
+                    nouvelleCombinaison.UnRetardBleuTour2 = UnRetardBleuTour2 / NrIterations;
+                    nouvelleCombinaison.unRetardRougeTour3 = unRetardRougeTour3 / NrIterations;
+                    nouvelleCombinaison.UnRetardBleuTour3 = UnRetardBleuTour3 / NrIterations;
+                    nouvelleCombinaison.UnRetardBleuTour4 = UnRetardBleuTour4 / NrIterations;
+                    nouvelleCombinaison.unRetardRougeTour4 = unRetardRougeTour4 / NrIterations;
+                    nouvelleCombinaison.UnBleuTour4 = UnBleuTour4 / NrIterations;
+                    nouvelleCombinaison.unRougeTour3 = unRougeTour3 / NrIterations;
+                    nouvelleCombinaison.TroisRougeTour4 = TroisRougeTour4 / NrIterations;
+                    nouvelleCombinaison.TroisRougeTour5 = TroisRougeTour5 / NrIterations;
+                    nouvelleCombinaison.UnRetardBleuTour5 = UnRetardBleuTour5 / NrIterations;
+                    nouvelleCombinaison.DeuxRetardBleusTour6 = DeuxRetardBleusTour6 / NrIterations;
+                    nouvelleCombinaison.UnLandUntapTour1 = UnLandUntapTour1 / NrIterations;
+                    nouvelleCombinaison.DeuxLandUntapTour2 = DeuxLandUntapTour2 / NrIterations;
+                    nouvelleCombinaison.TroisLandUntapTour3 = TroisLandUntapTour3 / NrIterations;
+                    nouvelleCombinaison.QuatreLandUntapTour4 = QuatreLandUntapTour4 / NrIterations;
+                    nouvelleCombinaison.CinqLandUntapTour5 = CinqLandUntapTour5 / NrIterations;
+                    nouvelleCombinaison.UnBleuTour1 = UnBleuTour1 / NrIterations;
+                    nouvelleCombinaison.UnBleuTour2 = UnBleuTour2 / NrIterations;
+                    nouvelleCombinaison.DeuxNoirTour4 = DeuxNoirTour4 / NrIterations;
+                    nouvelleCombinaison.DeuxNoirTour5 = DeuxNoirTour5 / NrIterations;
+                    nouvelleCombinaison.SansMulligan = SansMulligan / NrIterations;
+                    nouvelleCombinaison.Mulligan6 = Mulligan6 / NrIterations;
+                    nouvelleCombinaison.Mulligan5 = Mulligan5 / NrIterations;
+                    nouvelleCombinaison.Mulligan4 = Mulligan4 / NrIterations;
+                    db.Championnat.Add(nouvelleCombinaison);
+                    db.SaveChanges();
+                }
+            }
+
+            if (modemanuel || modeChampionnat)
+            {
+                Console.WriteLine("Score : " + score);
+                goto Mode_Manuel;
+            }
+            
 
             goto Initialiser;
 
